@@ -5,7 +5,7 @@
 
 Game::Game() : window { sf::VideoMode(1920, 1080, 32), "AI Labs", sf::Style::Fullscreen}
 {
-	
+	npc.physics.setVelocity(sf::Vector2f{ 1, 1 });
 }
 
 Game::~Game()
@@ -25,15 +25,12 @@ void Game::run()
 		if (clock.getElapsedTime() < timeAtEndOfPreviousFrame + timePerFrame)
 		{
 			render();
-			std::cout << "too soon to update" << std::endl;
 			continue;
 		}
-			update(deltaTime);
-			timeAtEndOfPreviousFrame = clock.getElapsedTime();
-			render();
 
-			std::cout << "updated complete" << std::endl;
-		
+		update(deltaTime);
+		timeAtEndOfPreviousFrame = clock.getElapsedTime();
+		render();
 	}
 }
 
@@ -49,6 +46,7 @@ void Game::render()
 
 void Game::update(float deltaTime)
 {
-	std::cout << "updating..." << std::endl;
+	player.update(deltaTime);
+	npc.update(deltaTime);
 }
 
