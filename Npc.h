@@ -18,8 +18,10 @@ public:
 	void draw(sf::RenderWindow& window) { window.draw(sprite); }
 	void update(float deltaTime);
 private:
-	//sf::Sprite sprite;
-	sf::CircleShape sprite;
+	sf::Sprite sprite;
+	sf::Texture texture;
+
+	void initialiseSprite();
 
 	void moveNpc(float deltaTime);
 };

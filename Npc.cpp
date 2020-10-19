@@ -2,9 +2,9 @@
 
 Npc::Npc()
 {
-	sprite.setFillColor(sf::Color::Red);
-	sprite.setRadius(5);
-	sprite.setPosition(sf::Vector2f(100, 100));
+	initialiseSprite();
+	position = sf::Vector2f(100, 100);
+	sprite.setPosition(position);
 }
 
 Npc::~Npc()
@@ -16,8 +16,16 @@ void Npc::update(float deltaTime)
 	moveNpc(deltaTime);
 
 	sprite.setPosition(position);
-	std::cout << "Pos X: " << position.x << std::endl;
-	std::cout << "Pos Y: " << position.y << std::endl;
+}
+
+void Npc::initialiseSprite()
+{
+	if (!texture.loadFromFile(TEXTURES_ALIEN_SHIP))
+	{
+		std::cout << "Alien Sprite not found!" << std::endl;
+	}
+	sprite.setTexture(texture);
+	sprite.setOrigin(127, 127);
 }
 
 void Npc::moveNpc(float deltaTime)
