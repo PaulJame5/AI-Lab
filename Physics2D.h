@@ -24,4 +24,6 @@ public:
 
 	sf::Vector2f getVelocity() { return velocity; }
 	void setVelocity(sf::Vector2f velocity) { this->velocity = velocity; }
+	void setXVelocity(float x) { this->velocity.x = x; }
+	void setYVelocity(float y) { this->velocity.y = y; }
 };
