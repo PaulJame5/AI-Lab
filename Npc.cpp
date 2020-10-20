@@ -5,6 +5,7 @@ Npc::Npc()
 	initialiseSprite();
 	position = sf::Vector2f(100, 100);
 	sprite.setPosition(position);
+	kin.setPosition(&position);
 }
 
 Npc::~Npc()
@@ -14,6 +15,7 @@ Npc::~Npc()
 void Npc::update(float deltaTime)
 {
 	moveNpc(deltaTime);
+	setSpriteAngle();
 
 	sprite.setPosition(position);
 }
@@ -28,10 +30,20 @@ void Npc::initialiseSprite()
 	sprite.setOrigin(127, 127);
 }
 
+void Npc::setSpriteAngle()
+{
+	sprite.setRotation((std::atan2(physics.velocity.y, physics.velocity.x) * 180 / PI));
+}
+
 void Npc::moveNpc(float deltaTime)
 {
-	position.x += physics.getVelocity().x * deltaTime;
-	position.y += physics.getVelocity().y * deltaTime;
+
+	//physics.setVelocity(kin.wander(deltaTime));
+	//physics.setVelocity(kin.seek(player->getPosition(), deltaTime));
+	//physics.setVelocity(kin.flee(player->getPosition(), deltaTime));
+	physics.setVelocity(kin.arrival(player->getPosition(), deltaTime));
+	position.x += physics.velocity.x * deltaTime;
+	position.y += physics.velocity.y * deltaTime;
 
 	wrapAroundWorld();
 }

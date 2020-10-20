@@ -14,7 +14,7 @@ public:
 	virtual void update(float deltaTime) = 0;
 
 	Physics2D physics;
-
+	sf::Vector2f getPosition() { return position; }
 protected:
 	void wrapAroundWorld();
 	sf::Vector2f position = sf::Vector2f{ 0, 0 };
