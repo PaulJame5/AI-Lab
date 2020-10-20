@@ -22,7 +22,7 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 
-	float acceleration = 0.01f;
+	float acceleration = 8.0f;
 
 	InputManager input;
 
@@ -32,6 +32,6 @@ private:
 
 	void setSpriteAngle();
 	
-	const float MAX_DIRECTIONAL_VELOCITY = 3.0f;
+	const float MAX_DIRECTIONAL_VELOCITY = 30.0f;
 
 };

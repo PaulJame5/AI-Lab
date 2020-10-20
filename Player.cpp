@@ -21,9 +21,9 @@ void Player::updateVelocity(float deltaTime)
 {
 	if (input.heldDown())
 	{
-		if (physics.getVelocity().y < MAX_DIRECTIONAL_VELOCITY)
+		if (physics.velocity.y < MAX_DIRECTIONAL_VELOCITY)
 		{
-			physics.setYVelocity(physics.getVelocity().y + acceleration * deltaTime);
+			physics.setYVelocity(physics.velocity.y + acceleration * deltaTime);
 		}
 		else
 		{
@@ -32,9 +32,9 @@ void Player::updateVelocity(float deltaTime)
 	}
 	else if (input.heldUp())
 	{
-		if (physics.getVelocity().y > -MAX_DIRECTIONAL_VELOCITY)
+		if (physics.velocity.y > -MAX_DIRECTIONAL_VELOCITY)
 		{
-			physics.setYVelocity(physics.getVelocity().y - acceleration * deltaTime);
+			physics.setYVelocity(physics.velocity.y - acceleration * deltaTime);
 		}
 		else
 		{
@@ -43,9 +43,9 @@ void Player::updateVelocity(float deltaTime)
 	}
 	if (input.heldLeft())
 	{
-		if (physics.getVelocity().x > -MAX_DIRECTIONAL_VELOCITY)
+		if (physics.velocity.x > -MAX_DIRECTIONAL_VELOCITY)
 		{
-			physics.setXVelocity(physics.getVelocity().x - acceleration * deltaTime);
+			physics.setXVelocity(physics.velocity.x - acceleration * deltaTime);
 		}
 		else
 		{
@@ -54,9 +54,9 @@ void Player::updateVelocity(float deltaTime)
 	}
 	else if (input.heldRight())
 	{
-		if (physics.getVelocity().x < MAX_DIRECTIONAL_VELOCITY)
+		if (physics.velocity.x < MAX_DIRECTIONAL_VELOCITY)
 		{
-			physics.setXVelocity(physics.getVelocity().x + acceleration * deltaTime);
+			physics.setXVelocity(physics.velocity.x + acceleration * deltaTime);
 		}
 		else
 		{
@@ -71,7 +71,7 @@ void Player::movePlayer(float deltaTime)
 	updateVelocity(deltaTime);
 	setSpriteAngle();
 
-	position += physics.getVelocity();
+	position += physics.velocity;
 
 	wrapAroundWorld();
 
@@ -89,5 +89,5 @@ void Player::initialiseSprite()
 
 void Player::setSpriteAngle()
 {
-	sprite.setRotation((std::atan2(physics.getVelocity().y, physics.getVelocity().x)*180/PI));
+	sprite.setRotation((std::atan2(physics.velocity.y, physics.velocity.x)*180/PI));
 }

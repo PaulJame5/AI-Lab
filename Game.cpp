@@ -6,6 +6,7 @@
 Game::Game() : window { sf::VideoMode(1920, 1080, 32), "AI Labs", sf::Style::Fullscreen}
 {
 	npc.physics.setVelocity(sf::Vector2f{ 1, 1 });
+	npc.setPlayer(&player);
 }
 
 Game::~Game()
@@ -20,7 +21,7 @@ void Game::run()
 
 	while (window.isOpen() && !exitGame)
 	{
-		deltaTime = clock.getElapsedTime().asMilliseconds() - timeAtEndOfPreviousFrame.asMilliseconds();
+		deltaTime = clock.getElapsedTime().asSeconds() - timeAtEndOfPreviousFrame.asSeconds();
 
 		if (clock.getElapsedTime() < timeAtEndOfPreviousFrame + timePerFrame)
 		{
