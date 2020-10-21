@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Npc.h"
+#include "Enums.h"
+
 class Game
 {
 public:
@@ -15,7 +17,8 @@ public:
 private:
 
 	Player player;
-	Npc npc;
+	std::vector<Npc> npcs = std::vector<Npc>();
+	Npc flee, wander, seek, arrival,arrivalSlow, pursue;
 	sf::RenderWindow window;
 	bool exitGame = false;
 	float deltaTime = 0;
