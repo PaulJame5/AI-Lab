@@ -29,10 +29,22 @@ float KinematicBehaviour::randomNumber(float Min, float Max)
 	return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
 }
 
-sf::Vector2f KinematicBehaviour::seek(sf::Vector2f target, float deltaTime)
+sf::Vector2f KinematicBehaviour::seek(sf::Vector2f target, sf::Vector2f position, float deltaTime)
 {
 
-	sf::Vector2f desiredVelocity = normalise(target - *position) * maxAcceleration;
+	sf::Vector2f desiredVelocity = normalise(target - position) * maxAcceleration;
+	sf::Vector2f steering = desiredVelocity - velocity;
+
+	steering = truncate(steering, 25 * deltaTime);
+	velocity = truncate(velocity + steering, maxAcceleration);
+
+
+	return velocity;
+}
+sf::Vector2f KinematicBehaviour::pursue(sf::Vector2f target, sf::Vector2f targetVelocity, sf::Vector2f position, float deltaTime)
+{
+	// Aim to be slightly in front of direction target is going
+	sf::Vector2f desiredVelocity = (normalise((target + targetVelocity) - position)) * maxAcceleration;
 	sf::Vector2f steering = desiredVelocity - velocity;
 
 	steering = truncate(steering, 25 * deltaTime);
@@ -40,10 +52,10 @@ sf::Vector2f KinematicBehaviour::seek(sf::Vector2f target, float deltaTime)
 
 	return velocity;
 }
-sf::Vector2f KinematicBehaviour::flee(sf::Vector2f target, float deltaTime)
+sf::Vector2f KinematicBehaviour::flee(sf::Vector2f target, sf::Vector2f position, float deltaTime)
 {
 
-	sf::Vector2f desiredVelocity = normalise(*position - target) * maxAcceleration;
+	sf::Vector2f desiredVelocity = normalise(position - target) * maxAcceleration;
 	sf::Vector2f steering = desiredVelocity - velocity;
 
 	steering = truncate(steering, 25 * deltaTime);
@@ -53,10 +65,10 @@ sf::Vector2f KinematicBehaviour::flee(sf::Vector2f target, float deltaTime)
 }
 
 
-sf::Vector2f KinematicBehaviour::arrival(sf::Vector2f target, float deltaTime)
+sf::Vector2f KinematicBehaviour::arrival(sf::Vector2f target, sf::Vector2f position, float deltaTime)
 {
 
-	sf::Vector2f desiredVelocity = normalise(target - *position) * maxAcceleration;
+	sf::Vector2f desiredVelocity = normalise(target - position) * maxAcceleration;
 
 	float distance = magnitude(desiredVelocity);
 
@@ -77,7 +89,35 @@ sf::Vector2f KinematicBehaviour::arrival(sf::Vector2f target, float deltaTime)
 	return velocity;
 }
 
+sf::Vector2f KinematicBehaviour::arrivalSlow(sf::Vector2f target, sf::Vector2f position, float deltaTime)
+{
 
+	sf::Vector2f desiredVelocity = normalise(target - position) * maxAcceleration;
+
+	float distance = magnitude(desiredVelocity);
+
+	if (distance < 100)
+	{
+		// Inside the slowing area
+		desiredVelocity = normalise(desiredVelocity) * maxAcceleration / 10.0f * (distance / 100);
+	}
+	else
+	{
+		desiredVelocity = normalise(desiredVelocity) * maxAcceleration / 10.0f;
+	}
+	sf::Vector2f steering = desiredVelocity - velocity;
+
+	steering = truncate(steering, 10 * deltaTime);
+	velocity = truncate(velocity + steering, maxAcceleration / 10.0f);
+
+	return velocity;
+}
+
+
+bool KinematicBehaviour::isCollisionDetected(Character &character1, Character &character2, float angle, float collisionDistance)
+{
+	return false;
+}
 
 sf::Vector2f KinematicBehaviour::normalise(sf::Vector2f vector)
 {
@@ -93,9 +133,28 @@ sf::Vector2f KinematicBehaviour::truncate(sf::Vector2f vector, float maxForce)
 	return vector;
 }
 
+float KinematicBehaviour::angleBetween(sf::Vector2f vector1, sf::Vector2f vector2)
+{
+	return std::acos((dot(normalise(vector1), normalise(vector2)))) * 57.29578f;
+}
+
+float KinematicBehaviour::dot(sf::Vector2f lhs, sf::Vector2f rhs)
+{
+	return (lhs.x * rhs.x + lhs.y * rhs.y);
+}
+
 float KinematicBehaviour::magnitude(sf::Vector2f vector)
 {
 	return (std::sqrtf(vector.x * vector.x + vector.y * vector.y));
+}
+
+bool KinematicBehaviour::fieldOfVision(sf::Vector2f facingDirection, sf::Vector2f toOther, float viewAngle)
+{
+	if (angleBetween(facingDirection, toOther) < viewAngle)
+	{
+		return true;
+	}
+	return false;
 }
 
 void KinematicBehaviour::setWanderAngle(sf::Vector2f& displacement, float angle)
